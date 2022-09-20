@@ -583,7 +583,7 @@ int main(int argc, char** argv) {
 		{
 			vector<float> tlwh = output_stracks[i].tlwh;
 			bool vertical = tlwh[2] / tlwh[3] > 1.6;
-			if (tlwh[2] * tlwh[3] > 20 && !vertical)
+			// if (tlwh[2] * tlwh[3] > 20 && !vertical)
 			{
 				Scalar s = tracker.get_color(output_stracks[i].track_id);
 				putText(img, format("%d", output_stracks[i].track_id), Point(tlwh[0], tlwh[1] - 5), 
@@ -594,6 +594,7 @@ int main(int argc, char** argv) {
         // putText(img, format("frame: %d fps: %d num: %d", num_frames, num_frames * 1000000 / total_ms, output_stracks.size()), 
         //         Point(0, 30), 0, 0.6, Scalar(0, 0, 255), 2, LINE_AA);
         // writer.write(img);
+
         cv::imshow("frame",img);
 
 

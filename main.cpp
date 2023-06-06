@@ -46,11 +46,15 @@
 #include <string>
 #include <array>
 
+#include "yolo7.hpp"
+
 using namespace std;
 
 #include <fstream>
 #include <string>
 #include <algorithm>
+
+
 
 
 #define CLASSIC_MEM
@@ -540,39 +544,40 @@ int main(int argc, char** argv) {
 
         int img_w = img.cols;
         int img_h = img.rows;
-        cv::resize(img, re, re.size());
-        blobFromImage2(re,blob);
-
-        auto start = std::chrono::system_clock::now();
-#ifdef CLASSIC_MEM
-        CHECK(cudaMemcpyAsync(buffers[inputIndex], blob, 3 * INPUT_W * INPUT_H * sizeof(float), cudaMemcpyHostToDevice, stream));
-#endif
-
-#ifdef UNIFIED_MEM
-        cudaStreamAttachMemAsync(stream,blob,0,cudaMemAttachGlobal);
-#endif
-         // int32_t batchSize, void* const* bindings, cudaStream_t stream, cudaEvent_t* inputConsumed)
-        // context.enqueue(1, buffers, stream, nullptr);
-        // void* const* bindings, cudaStream_t stream, cudaEvent_t* inputConsumed)
-        context->enqueueV2(buffers, stream, nullptr);
-#ifdef CLASSIC_MEM       
-        CHECK(cudaMemcpyAsync(prob1, buffers[outputIndex1], output_size1 * sizeof(float), cudaMemcpyDeviceToHost, stream));
-        CHECK(cudaMemcpyAsync(prob2, buffers[outputIndex2], output_size2 * sizeof(float), cudaMemcpyDeviceToHost, stream));
-        CHECK(cudaMemcpyAsync(prob3, buffers[outputIndex3], output_size3 * sizeof(float), cudaMemcpyDeviceToHost, stream));
-#endif        
-        // cout<<"IM here\n";
-#ifdef UNIFIED_MEM
-        cudaStreamSynchronize(stream); // this additional bcuse of Note on page 10 cuda for tegra doc 
-        cudaStreamAttachMemAsync(stream,prob1,0,cudaMemAttachHost);
-        cudaStreamAttachMemAsync(stream,prob2,0,cudaMemAttachHost);
-        cudaStreamAttachMemAsync(stream,prob3,0,cudaMemAttachHost);
-#endif
-        cudaStreamSynchronize(stream);
-         
         std::vector<Object> objects;
-        decode_outputs(prob1,prob2,prob3, objects, scale, img_w, img_h);
+//         cv::resize(img, re, re.size());
+//         blobFromImage2(re,blob);
+
+//         auto start = std::chrono::system_clock::now();
+// #ifdef CLASSIC_MEM
+//         CHECK(cudaMemcpyAsync(buffers[inputIndex], blob, 3 * INPUT_W * INPUT_H * sizeof(float), cudaMemcpyHostToDevice, stream));
+// #endif
+
+// #ifdef UNIFIED_MEM
+//         cudaStreamAttachMemAsync(stream,blob,0,cudaMemAttachGlobal);
+// #endif
+//          // int32_t batchSize, void* const* bindings, cudaStream_t stream, cudaEvent_t* inputConsumed)
+//         // context.enqueue(1, buffers, stream, nullptr);
+//         // void* const* bindings, cudaStream_t stream, cudaEvent_t* inputConsumed)
+//         context->enqueueV2(buffers, stream, nullptr);
+// #ifdef CLASSIC_MEM       
+//         CHECK(cudaMemcpyAsync(prob1, buffers[outputIndex1], output_size1 * sizeof(float), cudaMemcpyDeviceToHost, stream));
+//         CHECK(cudaMemcpyAsync(prob2, buffers[outputIndex2], output_size2 * sizeof(float), cudaMemcpyDeviceToHost, stream));
+//         CHECK(cudaMemcpyAsync(prob3, buffers[outputIndex3], output_size3 * sizeof(float), cudaMemcpyDeviceToHost, stream));
+// #endif        
+//         // cout<<"IM here\n";
+// #ifdef UNIFIED_MEM
+//         cudaStreamSynchronize(stream); // this additional bcuse of Note on page 10 cuda for tegra doc 
+//         cudaStreamAttachMemAsync(stream,prob1,0,cudaMemAttachHost);
+//         cudaStreamAttachMemAsync(stream,prob2,0,cudaMemAttachHost);
+//         cudaStreamAttachMemAsync(stream,prob3,0,cudaMemAttachHost);
+// #endif
+//         cudaStreamSynchronize(stream);
+         
+//         std::vector<Object> objects;
+//         decode_outputs(prob1,prob2,prob3, objects, scale, img_w, img_h);
         
-        // draw_objects(img, objects, input_image_path);
+        
         vector<STrack> output_stracks = tracker.update(objects);
         
         auto end = std::chrono::system_clock::now();

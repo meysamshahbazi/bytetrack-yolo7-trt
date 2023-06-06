@@ -15,6 +15,6 @@ include_directories(/usr/local/include/eigen3)
 
 
 # TARGETS --------------------------------------------------------------------------------------------------------------
-add_executable(${PROJECT_NAME} main.cpp yolo7.cpp BYTETracker.cpp  kalmanFilter.cpp  lapjv.cpp   STrack.cpp  byte_utils.cpp)
+add_executable(${PROJECT_NAME} main.cpp yolo7.cpp utils.cpp BYTETracker.cpp  kalmanFilter.cpp  lapjv.cpp   STrack.cpp  byte_utils.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC ${OpenCV_INCLUDE_DIRS} ${CUDA_INCLUDE_DIRS} ${TensorRT_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${OpenCV_LIBS} ${CUDA_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${TensorRT_LIBRARIES})

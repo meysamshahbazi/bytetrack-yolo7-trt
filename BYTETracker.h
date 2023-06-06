@@ -1,13 +1,13 @@
 #pragma once
 
 #include "STrack.h"
-
-struct Object
-{
-    cv::Rect_<float> rect;
-    int label;
-    float prob;
-};
+#include "utils.hpp"
+// struct Object
+// {
+//     cv::Rect_<float> rect;
+//     int label;
+//     float prob;
+// };
 
 class BYTETracker
 {
